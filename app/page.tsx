@@ -1,0 +1,349 @@
+'use client'
+import React, { useState } from "react";
+import { GraduationCap, Users, BookOpen, Brain, Menu, X, CheckCircle2 } from "lucide-react";
+
+// --- UI Components (Mocking shadcn/ui for single-file portability) ---
+
+const Button = ({ children, className = "", variant = "primary", onClick, ...props }) => {
+  const baseStyles = "inline-flex items-center justify-center rounded-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none";
+  const variants = {
+    primary: "bg-teal-500 text-white hover:bg-teal-600 focus:ring-teal-500 shadow-lg shadow-teal-500/30",
+    secondary: "bg-orange-500 text-white hover:bg-orange-600 focus:ring-orange-500 shadow-lg shadow-orange-500/30",
+    ghost: "text-slate-600 hover:bg-slate-100 hover:text-slate-900",
+    outline: "border border-slate-200 hover:bg-slate-100 text-slate-700",
+    link: "text-slate-600 hover:text-teal-600 underline-offset-4 hover:underline"
+  };
+  
+  const sizes = "h-10 py-2 px-6 text-sm";
+  
+  return (
+    <button 
+      className={`${baseStyles} ${variants[variant] || variants.primary} ${sizes} ${className}`}
+      onClick={onClick}
+      {...props}
+    >
+      {children}
+    </button>
+  );
+};
+
+const Card = ({ children, className = "", onClick }) => (
+  <div onClick={onClick} className={`rounded-3xl bg-white ${className}`}>
+    {children}
+  </div>
+);
+
+// --- Mock Dashboards & Auth Components ---
+
+const TeacherDashboard = ({ onBack }) => (
+  <div className="min-h-screen bg-slate-50 p-8">
+    <div className="max-w-4xl mx-auto text-center">
+      <h1 className="text-3xl font-bold text-slate-800 mb-4">Teacher Dashboard</h1>
+      <p className="text-slate-600 mb-8">Welcome to the instructor interface.</p>
+      <Button onClick={onBack} variant="outline">Log Out</Button>
+    </div>
+  </div>
+);
+
+const StudentDashboard = ({ onBack }) => (
+  <div className="min-h-screen bg-slate-50 p-8">
+    <div className="max-w-4xl mx-auto text-center">
+      <h1 className="text-3xl font-bold text-slate-800 mb-4">Student Dashboard</h1>
+      <p className="text-slate-600 mb-8">Welcome to the learning portal.</p>
+      <Button onClick={onBack} variant="outline">Log Out</Button>
+    </div>
+  </div>
+);
+
+const Modal = ({ isOpen, onClose, title, children }) => {
+  if (!isOpen) return null;
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 relative animate-in fade-in zoom-in duration-200">
+        <button onClick={onClose} className="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
+          <X className="w-5 h-5" />
+        </button>
+        <h2 className="text-2xl font-bold text-slate-800 mb-4">{title}</h2>
+        {children}
+      </div>
+    </div>
+  );
+};
+
+const SignupForm = ({ role, onClose }) => (
+  <div className="space-y-4">
+    <div>
+      <label className="block text-sm font-medium text-slate-700 mb-1">Email Address</label>
+      <input type="email" className="w-full rounded-lg border border-slate-300 px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none" placeholder="you@example.com" />
+    </div>
+    <div>
+      <label className="block text-sm font-medium text-slate-700 mb-1">Password</label>
+      <input type="password" className="w-full rounded-lg border border-slate-300 px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none" placeholder="••••••••" />
+    </div>
+    <Button className={`w-full mt-2 ${role === 'student' ? 'bg-orange-500 hover:bg-orange-600' : 'bg-teal-500 hover:bg-teal-600'}`} onClick={onClose}>
+      Create {role === 'teacher' ? 'Teacher' : 'Student'} Account
+    </Button>
+    <p className="text-center text-sm text-slate-500">
+      Already have an account? <button className="text-teal-600 font-medium hover:underline">Sign in</button>
+    </p>
+  </div>
+);
+
+// --- Main Application Component ---
+
+const Index = () => {
+  const [userRole, setUserRole] = useState(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [showTeacherSignup, setShowTeacherSignup] = useState(false);
+  const [showStudentSignup, setShowStudentSignup] = useState(false);
+
+  if (userRole === "teacher") {
+    return <TeacherDashboard onBack={() => setUserRole(null)} />;
+  }
+
+  if (userRole === "student") {
+    return <StudentDashboard onBack={() => setUserRole(null)} />;
+  }
+
+  return (
+    <div className="min-h-screen bg-slate-50 font-sans text-slate-900 selection:bg-teal-100">
+      {/* Navigation Bar */}
+      <nav className="fixed top-0 left-0 right-0 z-40 bg-white/80 backdrop-blur-md border-b border-slate-100">
+        <div className="container mx-auto px-4 md:px-6">
+          <div className="flex items-center justify-between h-20">
+            {/* Logo */}
+            <div className="flex items-center gap-3 cursor-pointer">
+              <div className="w-10 h-10 bg-teal-500 rounded-lg flex items-center justify-center shadow-lg shadow-teal-500/20">
+                <Brain className="w-6 h-6 text-white" />
+              </div>
+              <span className="text-xl md:text-2xl font-bold text-slate-700">
+                QuizMaster <span className="text-orange-500">AI</span>
+              </span>
+            </div>
+
+            {/* Desktop Navigation */}
+            <div className="hidden md:flex items-center gap-8">
+              <a href="#features" className="text-sm font-medium text-slate-600 hover:text-teal-600 transition-colors">Features</a>
+              <a href="#about" className="text-sm font-medium text-slate-600 hover:text-teal-600 transition-colors">About</a>
+              <a href="#contact" className="text-sm font-medium text-slate-600 hover:text-teal-600 transition-colors">Contact</a>
+            </div>
+
+            {/* Desktop Auth Buttons */}
+            <div className="hidden md:flex items-center gap-4">
+              <button className="text-sm font-medium text-slate-700 hover:text-teal-600 px-4">Sign In</button>
+              <Button onClick={() => setShowTeacherSignup(true)} className="rounded-full">
+                Get Started
+              </Button>
+            </div>
+
+            {/* Mobile Menu Button */}
+            <button
+              className="md:hidden p-2 text-slate-600"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            >
+              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
+          </div>
+
+          {/* Mobile Menu */}
+          {mobileMenuOpen && (
+            <div className="md:hidden py-4 border-t border-slate-100 animate-in slide-in-from-top-5">
+              <div className="flex flex-col space-y-4 p-2">
+                <a href="#features" className="px-4 py-2 hover:bg-slate-50 rounded-lg text-slate-600">Features</a>
+                <a href="#about" className="px-4 py-2 hover:bg-slate-50 rounded-lg text-slate-600">About</a>
+                <a href="#contact" className="px-4 py-2 hover:bg-slate-50 rounded-lg text-slate-600">Contact</a>
+                <div className="h-px bg-slate-100 my-2"></div>
+                <button className="px-4 py-2 text-left font-medium text-slate-700">Sign In</button>
+                <Button onClick={() => setShowTeacherSignup(true)} className="w-full justify-center">
+                  Get Started
+                </Button>
+              </div>
+            </div>
+          )}
+        </div>
+      </nav>
+
+      {/* Signup Modals */}
+      <Modal 
+        isOpen={showTeacherSignup} 
+        onClose={() => setShowTeacherSignup(false)} 
+        title="Teacher Sign Up"
+      >
+        <SignupForm role="teacher" onClose={() => { setShowTeacherSignup(false); setUserRole('teacher'); }} />
+      </Modal>
+
+      <Modal 
+        isOpen={showStudentSignup} 
+        onClose={() => setShowStudentSignup(false)} 
+        title="Student Sign Up"
+      >
+        <SignupForm role="student" onClose={() => { setShowStudentSignup(false); setUserRole('student'); }} />
+      </Modal>
+
+      <main className="pt-32 pb-20 px-4 md:px-6 overflow-hidden">
+        
+        {/* Background Blobs - Matches the soft gradients in images */}
+        <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
+          <div className="absolute top-20 left-10 w-96 h-96 bg-teal-100/40 rounded-full blur-3xl mix-blend-multiply animate-pulse"></div>
+          <div className="absolute bottom-20 right-10 w-96 h-96 bg-orange-100/40 rounded-full blur-3xl mix-blend-multiply"></div>
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-slate-100/50 rounded-full blur-3xl"></div>
+        </div>
+
+        <div className="container mx-auto relative z-10">
+          
+          {/* Hero Section */}
+          <div className="text-center mb-20 max-w-4xl mx-auto">
+            {/* Hero Icon */}
+            <div className="flex justify-center mb-8">
+               <div className="w-20 h-20 md:w-24 md:h-24 bg-white rounded-3xl shadow-xl shadow-teal-900/5 flex items-center justify-center border border-slate-100">
+                 <Brain className="w-10 h-10 md:w-12 md:h-12 text-teal-500" />
+               </div>
+            </div>
+
+            <h1 className="text-5xl md:text-7xl font-bold text-slate-800 mb-6 tracking-tight">
+              QuizMaster <span className="text-teal-500">AI</span>
+            </h1>
+            
+            <p className="text-xl md:text-2xl text-slate-400 font-light mb-4">
+              Transform Education with AI-Powered Assessments
+            </p>
+            
+            <p className="text-slate-500 max-w-2xl mx-auto text-base md:text-lg leading-relaxed">
+              Create intelligent quizzes, track performance, and ensure academic integrity with advanced anti-cheat technology
+            </p>
+          </div>
+
+          {/* Portal Cards Section - Replicating Dashboard 2 */}
+          <div className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto mb-24">
+            
+            {/* Teacher Portal Card */}
+            <Card 
+              className="group relative overflow-hidden border-2 border-teal-100 hover:border-teal-400 transition-all duration-300 hover:shadow-2xl hover:shadow-teal-900/10 bg-teal-50/30 p-8 md:p-10"
+            >
+              <div className="relative z-10">
+                <div className="w-16 h-16 bg-teal-100 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                  <GraduationCap className="w-8 h-8 text-teal-600" />
+                </div>
+                
+                <h2 className="text-3xl font-bold text-slate-800 mb-4">Teacher Portal</h2>
+                
+                <p className="text-slate-600 mb-8 leading-relaxed">
+                  Create intelligent classrooms, generate AI-powered quizzes, and monitor student progress in real-time.
+                </p>
+                
+                <ul className="space-y-4 mb-10">
+                  {[
+                    "AI-generated MCQs from any content",
+                    "Flexible scheduling & access control",
+                    "Automatic grading with analytics",
+                    "Question shuffling for security"
+                  ].map((item, i) => (
+                    <li key={i} className="flex items-center gap-3 text-slate-600">
+                      <div className="w-2 h-2 rounded-full bg-teal-400" />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+                
+                <Button 
+                  variant="primary" 
+                  className="w-full h-12 text-base font-semibold"
+                  onClick={() => setShowTeacherSignup(true)}
+                >
+                  Sign Up as Teacher
+                </Button>
+              </div>
+            </Card>
+
+            {/* Student Portal Card */}
+            <Card 
+              className="group relative overflow-hidden border-2 border-orange-100 hover:border-orange-400 transition-all duration-300 hover:shadow-2xl hover:shadow-orange-900/10 bg-orange-50/30 p-8 md:p-10"
+            >
+              <div className="relative z-10">
+                <div className="w-16 h-16 bg-orange-100 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                  <Users className="w-8 h-8 text-orange-600" />
+                </div>
+                
+                <h2 className="text-3xl font-bold text-slate-800 mb-4">Student Portal</h2>
+                
+                <p className="text-slate-600 mb-8 leading-relaxed">
+                  Join classrooms, take secure quizzes, and get instant feedback on your performance.
+                </p>
+                
+                <ul className="space-y-4 mb-10">
+                  {[
+                    "Quick access with classroom ID",
+                    "Secure exam environment",
+                    "Instant results with feedback",
+                    "Track progress across quizzes"
+                  ].map((item, i) => (
+                    <li key={i} className="flex items-center gap-3 text-slate-600">
+                      <div className="w-2 h-2 rounded-full bg-orange-400" />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+                
+                <Button 
+                  variant="secondary" 
+                  className="w-full h-12 text-base font-semibold"
+                  onClick={() => setShowStudentSignup(true)}
+                >
+                  Sign Up as Student
+                </Button>
+              </div>
+            </Card>
+
+          </div>
+
+          {/* Features Grid - Replicating Dashboard 3 */}
+          <div className="max-w-5xl mx-auto" id="features">
+            <div className="grid md:grid-cols-3 gap-8">
+              {/* Feature 1 */}
+              <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 text-center">
+                <div className="w-14 h-14 mx-auto bg-teal-50 rounded-xl flex items-center justify-center mb-6">
+                  <BookOpen className="w-7 h-7 text-teal-500" />
+                </div>
+                <h3 className="text-lg font-bold text-slate-800 mb-3">AI-Powered Generation</h3>
+                <p className="text-slate-500 text-sm leading-relaxed">
+                  Create quizzes from any topic or document instantly with advanced AI models.
+                </p>
+              </div>
+
+              {/* Feature 2 */}
+              <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 text-center">
+                <div className="w-14 h-14 mx-auto bg-teal-50 rounded-xl flex items-center justify-center mb-6">
+                  <Brain className="w-7 h-7 text-teal-500" />
+                </div>
+                <h3 className="text-lg font-bold text-slate-800 mb-3">Smart Auto-Grading</h3>
+                <p className="text-slate-500 text-sm leading-relaxed">
+                  Instant evaluation with detailed analytics, insights, and performance tracking.
+                </p>
+              </div>
+
+              {/* Feature 3 */}
+              <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 text-center">
+                <div className="w-14 h-14 mx-auto bg-orange-50 rounded-xl flex items-center justify-center mb-6">
+                  <GraduationCap className="w-7 h-7 text-orange-500" />
+                </div>
+                <h3 className="text-lg font-bold text-slate-800 mb-3">Anti-Cheat Security</h3>
+                <p className="text-slate-500 text-sm leading-relaxed">
+                  Advanced tab monitoring, copy prevention, and secure browser environment.
+                </p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </main>
+
+      <footer className="bg-white py-8 border-t border-slate-100">
+        <div className="container mx-auto px-6 text-center text-slate-400 text-sm">
+          © 2024 QuizMaster AI. Transform your assessment experience.
+        </div>
+      </footer>
+    </div>
+  );
+};
+
+export default Index;
