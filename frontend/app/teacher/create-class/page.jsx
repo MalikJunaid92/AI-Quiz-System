@@ -1,6 +1,7 @@
 "use client"
 import { useState } from "react";
 import { ArrowLeft, Save } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 // --- MOCK UI COMPONENTS (Teal Theme) ---
 
@@ -77,8 +78,20 @@ const CreateClassroom = ({ onBack }) => {
     toast({
       title: "Classroom Created!",
       description: `${formData.name} has been successfully created.`,
+      
     });
+      setFormData({
+    name: "",
+    description: "",
+    subject: "",
+  });
     if (onBack) onBack();
+   
+
+  };
+ const  router=useRouter()
+  const HandleBack = () => {
+    router.push("./"); // Navigate to "./" relative to current route
   };
 
   return (
@@ -87,7 +100,7 @@ const CreateClassroom = ({ onBack }) => {
       {/* Header */}
       <div className="bg-white border-b border-slate-200 sticky top-0 z-10">
         <div className="container mx-auto px-4 h-16 flex items-center gap-4">
-          <Button variant="ghost" size="icon" onClick={onBack} className="-ml-2">
+          <Button variant="ghost" size="icon" onClick={HandleBack} className="-ml-2">
             <ArrowLeft className="h-5 w-5" />
           </Button>
           <div>
@@ -139,7 +152,7 @@ const CreateClassroom = ({ onBack }) => {
               <Button type="button" variant="outline" onClick={onBack} className="min-w-[100px]">
                 Cancel
               </Button>
-              <Button type="submit" className="min-w-[180px]">
+              <Button  type="submit" className="min-w-[180px]">
                 <Save className="h-4 w-4 mr-2" />
                 Create Classroom
               </Button>

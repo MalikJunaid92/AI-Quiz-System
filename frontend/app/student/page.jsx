@@ -1,6 +1,7 @@
 "use client"
 import { useState } from "react";
 import { ArrowLeft, Clock, CheckCircle2, AlertCircle, PlayCircle } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 // --- MOCK UI COMPONENTS (Matches screenshots) ---
 
@@ -14,6 +15,8 @@ const Button = ({ className = "", variant = "primary", size = "default", childre
     ghost: "hover:bg-slate-100 text-slate-600", // Back button
     disabled: "bg-slate-100 text-slate-500 border border-slate-200", // Available at...
   };
+
+ 
 
   const sizes = {
     default: "h-11 px-6 text-sm",
@@ -115,6 +118,11 @@ const StudentDashboard = ({ onBack }) => {
     }
   };
 
+    const router=useRouter()
+      const Switchtoquizattempt=()=>{
+        router.push("student/quiz-attempt")
+      }
+
   // --- Helper to render quiz status and action button ---
   const renderQuizAction = (quiz) => {
     if (quiz.status === 'upcoming') {
@@ -129,7 +137,7 @@ const StudentDashboard = ({ onBack }) => {
         <Button 
             variant="success" 
             className="w-full md:w-auto"
-            onClick={() => setSelectedQuiz(quiz.id)}
+            onClick={Switchtoquizattempt}
         >
           Start Now
         </Button>

@@ -10,6 +10,7 @@ import {
   Download,
   X
 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 // --- UI COMPONENTS (Teal Theme) ---
 
@@ -126,7 +127,10 @@ const CreateQuiz = ({ classroomId = "CLS002", onBack }) => {
     endTime: "",
     duration: 30,
   });
-
+const route=useRouter()
+  const handBack=()=>{
+    route.push('./')
+  }
   const [generatedQuestions, setGeneratedQuestions] = useState([]);
 
   const handleGenerateAI = () => {
@@ -149,8 +153,8 @@ const CreateQuiz = ({ classroomId = "CLS002", onBack }) => {
       {/* Header */}
       <div className="bg-white border-b border-slate-200 sticky top-0 z-10">
         <div className="container mx-auto px-4 h-16 flex items-center gap-4">
-          <Button variant="ghost" size="icon" onClick={onBack} className="-ml-2">
-            <ArrowLeft className="h-5 w-5" />
+          <Button variant="ghost" size="icon" onClick={handBack} className="-ml-2">
+            <ArrowLeft  className="h-5 w-5" />
           </Button>
           <div>
             <h1 className="text-lg font-bold text-slate-900 leading-tight">Create New Quiz</h1>
@@ -304,7 +308,8 @@ const CreateQuiz = ({ classroomId = "CLS002", onBack }) => {
                     
                     <Button variant="outline" className="bg-white">
                       <FileText className="h-4 w-4 mr-2" />
-                      Choose File
+                      <input type="file"  />
+                      
                     </Button>
                     
                     <p className="text-xs text-slate-400 mt-8">

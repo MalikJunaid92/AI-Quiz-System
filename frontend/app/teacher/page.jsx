@@ -9,6 +9,7 @@ import {
   FileText, 
   Calendar
 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 // --- MOCK SUB-COMPONENTS ---
 // These are defined here to prevent import errors in the single-file preview.
@@ -104,6 +105,15 @@ const TeacherDashboard = ({ onBack }) => {
     }
   ];
 
+   const router=useRouter()
+      const SwitchtoManageClass=()=>{
+        router.push("teacher/manage-class")
+      }
+      
+      const SwitchtoCreateClass=()=>{
+        router.push("teacher/create-class")
+      }
+
   const handleCreateClassroom = () => setView("create");
   
   const handleViewClassroom = (classroomId) => {
@@ -134,25 +144,46 @@ const TeacherDashboard = ({ onBack }) => {
     <div className="min-h-screen bg-slate-50 font-sans text-slate-900">
       
       {/* Header */}
-      <div className="bg-white border-b border-slate-200 sticky top-0 z-10">
+      {/* <div className="bg-white border-b border-slate-200 sticky top-0 z-10">
         <div className="container mx-auto px-4 md:px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <Button variant="ghost" onClick={onBack} size="icon" className="-ml-2">
-                <ArrowLeft className="h-5 w-5" />
-              </Button>
+              
               <div>
                 <h1 className="text-xl font-bold text-slate-900">Teacher Dashboard</h1>
                 <p className="text-sm text-slate-500">Manage your classrooms and quizzes</p>
               </div>
             </div>
-            <Button onClick={handleCreateClassroom}>
+            <Button  onClick={SwitchtoCreateClass}>
               <Plus className="h-4 w-4 mr-2" />
               Create Classroom
             </Button>
           </div>
         </div>
+      </div> */}
+
+      {/* Header */}
+<div className="bg-white border-b border-slate-200 sticky top-0 z-10">
+  <div className="container mx-auto px-4 md:px-6 py-4">
+    <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 md:gap-0">
+      
+      {/* Title & Subtitle */}
+      <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4">
+        <div>
+          <h1 className="text-xl md:text-2xl font-bold text-slate-900">Teacher Dashboard</h1>
+          <p className="text-sm md:text-base text-slate-500">Manage your classrooms and quizzes</p>
+        </div>
       </div>
+
+      {/* Create Classroom Button */}
+      <Button onClick={SwitchtoCreateClass} className="w-full md:w-auto flex items-center justify-center">
+        <Plus className="h-4 w-4 mr-2" />
+        Create Classroom
+      </Button>
+    </div>
+  </div>
+</div>
+
 
       <div className="container mx-auto px-4 md:px-6 py-8 space-y-10">
         
@@ -235,9 +266,9 @@ const TeacherDashboard = ({ onBack }) => {
 
                 <div className="p-4 pt-0 mt-auto">
                   <Button 
-                    variant="outline" 
+                    variant="primary" 
                     className="w-full border-slate-200 text-slate-700 hover:border-slate-300 hover:bg-slate-50 h-11"
-                    onClick={() => handleViewClassroom(classroom.id)}
+                    onClick={SwitchtoManageClass}
                   >
                     Manage Classroom
                   </Button>
