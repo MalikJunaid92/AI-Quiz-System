@@ -8,6 +8,7 @@ import {
   ChevronRight, 
   CheckCircle2 
 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 // --- UI COMPONENTS (Teal/Cyan Theme) ---
 
@@ -51,6 +52,12 @@ const QuizAttempt = ({ quizId = "Q002", onBack }) => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState({});
   const [submitted, setSubmitted] = useState(false);
+
+  const router=useRouter()
+        const SwitchtoDashboard=()=>{
+          router.push("./")
+        }
+  
 
   // Mock Toast
   const toast = ({ title, description, variant }) => {
@@ -126,7 +133,7 @@ const QuizAttempt = ({ quizId = "Q002", onBack }) => {
             <h2 className="text-2xl font-bold text-slate-900">Quiz Submitted!</h2>
             <p className="text-slate-500 mt-2">Your answers have been successfully recorded.</p>
           </div>
-          <Button onClick={onBack} variant="primary" className="w-full bg-cyan-500 hover:bg-cyan-600">
+          <Button onClick={SwitchtoDashboard} variant="primary" className="w-full bg-cyan-500 hover:bg-cyan-600">
             Return to Dashboard
           </Button>
         </Card>

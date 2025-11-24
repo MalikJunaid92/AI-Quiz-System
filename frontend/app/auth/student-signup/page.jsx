@@ -1,14 +1,14 @@
 "use client"
 import { useState } from "react";
 import { Users, Mail, Lock, Building2, BookOpen, User, UserCheck, ChevronDown, X } from "lucide-react";
+import { useRouter } from "next/navigation";
 
-// --- MOCK UI COMPONENTS (Copying the style from your screenshot) ---
-// In your real project, you can keep your imports or update your UI component styles.
 
+// --- MOCK UI COMPONENTS (Student Orange Theme) ---
 const Button = ({ className = "", variant = "default", children, ...props }) => {
   const base = "inline-flex items-center justify-center rounded-xl text-sm font-semibold transition-all focus-visible:outline-none disabled:opacity-50 shadow-sm";
   const variants = {
-      default: "bg-orange-500 text-white hover:bg-orange-600 shadow-orange-500/25 hover:shadow-orange-500/40", // Student Orange Theme
+      default: "bg-orange-500 text-white hover:bg-orange-600 shadow-orange-500/25 hover:shadow-orange-500/40", 
       outline: "border border-slate-200 hover:bg-slate-50 text-slate-700",
   };
   return <button className={`${base} ${variants[variant] || variants.default} h-11 px-8 w-full ${className}`} {...props}>{children}</button>;
@@ -31,7 +31,6 @@ const Label = ({ className = "", children, icon: Icon, ...props }) => (
 );
 
 const Select = ({ value, onValueChange, children }) => {
-    // Simplified Select for preview purposes
     return (
         <div className="relative">
             <select 
@@ -47,9 +46,9 @@ const Select = ({ value, onValueChange, children }) => {
 };
 
 const SelectItem = ({ value, children }) => <option value={value}>{children}</option>;
-const SelectTrigger = ({ children }) => <>{children}</>; // No-op for native select mock
+const SelectTrigger = ({ children }) => <>{children}</>;
 const SelectValue = ({ placeholder }) => <option value="" disabled>{placeholder}</option>;
-const SelectContent = ({ children }) => <>{children}</>; // No-op for native select mock
+const SelectContent = ({ children }) => <>{children}</>;
 
 const Card = ({ className = "", children }) => <div className={`bg-white ${className}`}>{children}</div>;
 const CardHeader = ({ className = "", children }) => <div className={`space-y-1.5 p-1 ${className}`}>{children}</div>;
@@ -57,14 +56,13 @@ const CardTitle = ({ className = "", children }) => <h3 className={`text-2xl fon
 const CardDescription = ({ className = "", children }) => <p className={`text-sm text-slate-500 ${className}`}>{children}</p>;
 const CardContent = ({ className = "", children }) => <div className={`p-1 pt-0 ${className}`}>{children}</div>;
 
-// Mock Toast
 const useToast = () => ({
     toast: ({ title, description }) => alert(`${title}\n${description}`)
 });
 
 // --- END MOCKS ---
 
-export default function StudentSignup({ onClose }) {
+export default function StudentSignup({ onClose, onSwitchToSignIn }) {
   const { toast } = useToast();
   const [formData, setFormData] = useState({
     name: "",
@@ -77,11 +75,15 @@ export default function StudentSignup({ onClose }) {
     university: "",
     semester: "",
     shift: "",
+    
   });
 
+   const router=useRouter()
+    const SwitchtoStudentlogin=()=>{
+      router.push("student-signin")
+    }
   const handleSubmit = (e) => {
     e.preventDefault();
-
     if (formData.password !== formData.confirmPassword) {
       toast({
         title: "Password mismatch",
@@ -90,19 +92,17 @@ export default function StudentSignup({ onClose }) {
       });
       return;
     }
-
     toast({
       title: "Sign up successful!",
       description: "Welcome to QuizMaster AI, Student!",
+     
     });
-
-    console.log("Student signup data:", formData);
     if (onClose) onClose();
+    
   };
 
   return (
     <div className="w-full max-w-3xl mx-auto bg-white p-6 md:p-8 rounded-3xl shadow-2xl shadow-orange-900/10 relative">
-      {/* Close button for the modal context */}
       {onClose && (
         <button onClick={onClose} className="absolute top-6 right-6 text-slate-400 hover:text-slate-600 transition-colors">
           <X className="w-5 h-5" />
@@ -112,7 +112,6 @@ export default function StudentSignup({ onClose }) {
       <Card className="w-full border-0 shadow-none">
         <CardHeader className="space-y-2 pb-8">
           <div className="flex items-center gap-4 mb-2">
-            {/* Updated Icon Container to match screenshot style but with Student Orange */}
             <div className="w-14 h-14 bg-orange-100 rounded-2xl flex items-center justify-center border border-orange-200">
               <Users className="w-7 h-7 text-orange-600" />
             </div>
@@ -127,8 +126,6 @@ export default function StudentSignup({ onClose }) {
         
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
-            
-            {/* Name Section */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div className="space-y-1">
                 <Label htmlFor="name" icon={User}>Full Name</Label>
@@ -152,7 +149,6 @@ export default function StudentSignup({ onClose }) {
               </div>
             </div>
 
-            {/* Email Section */}
             <div className="space-y-1">
               <Label htmlFor="email" icon={Mail}>Email Address</Label>
               <Input
@@ -165,7 +161,6 @@ export default function StudentSignup({ onClose }) {
               />
             </div>
 
-            {/* Academic Info Section */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div className="space-y-1">
                 <Label htmlFor="subject" icon={BookOpen}>Subject</Label>
@@ -189,7 +184,6 @@ export default function StudentSignup({ onClose }) {
               </div>
             </div>
 
-            {/* University Section */}
             <div className="space-y-1">
               <Label htmlFor="university" icon={Building2}>University Name</Label>
               <Input
@@ -201,7 +195,6 @@ export default function StudentSignup({ onClose }) {
               />
             </div>
 
-            {/* Details Section */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div className="space-y-1">
                 <Label htmlFor="semester" icon={BookOpen}>Semester</Label>
@@ -221,7 +214,6 @@ export default function StudentSignup({ onClose }) {
                   </SelectContent>
                 </Select>
               </div>
-
               <div className="space-y-1">
                 <Label htmlFor="shift" icon={Users}>Shift</Label>
                 <Select
@@ -234,13 +226,11 @@ export default function StudentSignup({ onClose }) {
                   <SelectContent>
                     <SelectItem value="morning">Morning</SelectItem>
                     <SelectItem value="evening">Evening</SelectItem>
-                    
                   </SelectContent>
                 </Select>
               </div>
             </div>
 
-            {/* Password Section */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div className="space-y-1">
                 <Label htmlFor="password" icon={Lock}>Password</Label>
@@ -276,7 +266,11 @@ export default function StudentSignup({ onClose }) {
 
             <p className="text-sm text-slate-500 text-center pt-2">
               Already have an account?{" "}
-              <button type="button" className="text-orange-600 font-semibold hover:underline">
+              <button 
+                type="button" 
+                className="text-orange-600 font-semibold hover:underline"
+                onClick={SwitchtoStudentlogin}
+              >
                 Sign In
               </button>
             </p>

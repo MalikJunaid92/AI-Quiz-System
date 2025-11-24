@@ -14,6 +14,7 @@ import {
   File,
   Search
 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 // --- UI COMPONENTS ---
 
@@ -107,6 +108,16 @@ const ClassroomDetail = ({ classroomId = "CLS001", onBack }) => {
     { id: 3, name: "Michael Brown", email: "michael.b@school.edu", quizzes: 4, avgScore: 78, initials: "MB", color: "bg-emerald-100 text-emerald-700" },
     { id: 4, name: "Sarah Davis", email: "sarah.d@school.edu", quizzes: 5, avgScore: 88, initials: "SD", color: "bg-orange-100 text-orange-700" },
   ];
+  const route=useRouter()
+  const handQuizNav=()=>{
+    route.push('manage-class/create-quiz')
+  }
+
+   const HandleBack=()=>{
+    route.push('./')
+  }
+  HandleBack
+
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-slate-900 pb-10">
@@ -116,7 +127,7 @@ const ClassroomDetail = ({ classroomId = "CLS001", onBack }) => {
         <div className="container mx-auto px-4 md:px-6 py-4">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div className="flex items-center gap-4">
-              <Button variant="ghost" size="icon" onClick={onBack} className="-ml-2">
+              <Button variant="ghost" size="icon" onClick={HandleBack} className="-ml-2">
                 <ArrowLeft className="h-5 w-5" />
               </Button>
               <div>
@@ -129,7 +140,7 @@ const ClassroomDetail = ({ classroomId = "CLS001", onBack }) => {
                 <Download className="h-4 w-4 mr-2" />
                 Export Data
               </Button>
-              <Button>
+              <Button onClick={handQuizNav}>
                 <Plus className="h-4 w-4 mr-2" />
                 Create Quiz
               </Button>
