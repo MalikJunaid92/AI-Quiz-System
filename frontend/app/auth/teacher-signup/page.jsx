@@ -126,7 +126,7 @@ export default function TeacherSignup({ onClose, onSwitchToSignIn }) {
               <Label htmlFor="name" icon={User}>Full Name</Label>
               <Input
                 id="name"
-                placeholder="Dr. John Smith"
+                placeholder="Your Name"
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 required
@@ -137,7 +137,7 @@ export default function TeacherSignup({ onClose, onSwitchToSignIn }) {
               <Input
                 id="email"
                 type="email"
-                placeholder="john.smith@university.edu"
+                placeholder="Your Email"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 required
@@ -153,23 +153,17 @@ export default function TeacherSignup({ onClose, onSwitchToSignIn }) {
                 required
               />
             </div>
-            <div className="space-y-1">
-              <Label htmlFor="education" icon={BookOpen}>Education Level</Label>
-              <Select
-                value={formData.education}
-                onValueChange={(value) => setFormData({ ...formData, education: value })}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select your education level" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="bachelors">Bachelor's Degree</SelectItem>
-                  <SelectItem value="masters">Master's Degree</SelectItem>
-                  <SelectItem value="phd">Ph.D.</SelectItem>
-                  <SelectItem value="postdoc">Post-Doctorate</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+         <div className="space-y-1">
+  <Label htmlFor="education" icon={BookOpen}>Education Level</Label>
+  <Input
+    id="education"
+    type="text"
+    placeholder="Enter your education level"
+    value={formData.education}
+    onChange={(e) => setFormData({ ...formData, education: e.target.value })}
+  />
+</div>
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div className="space-y-1">
                 <Label htmlFor="password" icon={Lock}>Password</Label>

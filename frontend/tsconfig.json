@@ -29,6 +29,6 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
     "**/*.mts"
-, "components/components/auth/StudentSignup.jsx"  ],
+, "components/components/auth/StudentSignup.jsx", "app/page.jsx", "components/ui/Contact.jsx"  ],
   "exclude": ["node_modules"]
 }

@@ -8,8 +8,10 @@ import {
   Menu,
   X,
   CheckCircle2,
+  
 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import  Contact  from "../components/ui/Contact";
 
 // --- UI Components (Mocking shadcn/ui for single-file portability) ---
 
@@ -57,67 +59,9 @@ const Card = ({ children, className = "", onClick }) => (
 
 
 
-const Modal = ({ isOpen, onClose, title, children }) => {
-  if (!isOpen) return null;
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 relative animate-in fade-in zoom-in duration-200">
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 text-slate-400 hover:text-slate-600"
-        >
-          <X className="w-5 h-5" />
-        </button>
-        <h2 className="text-2xl font-bold text-slate-800 mb-4">{title}</h2>
-        {children}
-      </div>
-    </div>
-  );
-};
 
 
 
-const SignupForm = ({ role, onClose }) => (
-  <div className="space-y-4">
-    <div>
-      <label className="block text-sm font-medium text-slate-700 mb-1">
-        Email Address
-      </label>
-      <input
-        type="email"
-        className="w-full rounded-lg border border-slate-300 px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none"
-        placeholder="you@example.com"
-      />
-    </div>
-    <div>
-      <label className="block text-sm font-medium text-slate-700 mb-1">
-        Password
-      </label>
-      <input
-        type="password"
-        className="w-full rounded-lg border border-slate-300 px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none"
-        placeholder="••••••••"
-      />
-    </div>
-   
-    <Button
-      className={`w-full mt-2 ${
-        role === "student"
-          ? "bg-orange-500 hover:bg-orange-600"
-          : "bg-teal-500 hover:bg-teal-600"
-      }`}
-      onClick={onClose}
-    >
-      Create {role === "teacher" ? "Teacher" : "Student"} Account
-    </Button>
-    <p className="text-center text-sm text-slate-500">
-      Already have an account?{" "}
-      <button onClick={SwitchtoSignIn} className="text-teal-600 font-medium hover:underline">
-        Sign in
-      </button>
-    </p>
-  </div>
-);
 
 // --- Main Application Component ---
 
@@ -181,6 +125,7 @@ const Index = () => {
 
             {/* Desktop Auth Buttons */}
             <div className="hidden md:flex items-center gap-4">
+               <Button variant="ghost" onClick={SwitchtoSignIn}>Sign In</Button>
               <Button onClick={onclose} className="rounded-full">
                 <a href="#maincard">Get Started</a>
               </Button>
@@ -206,18 +151,21 @@ const Index = () => {
                 <a
                   href="#features"
                   className="px-4 py-2 hover:bg-slate-50 rounded-lg text-slate-600"
+                  onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                 >
                   Features
                 </a>
                 <a
                   href="#about"
                   className="px-4 py-2 hover:bg-slate-50 rounded-lg text-slate-600"
+                  onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                 >
                   About
                 </a>
                 <a
                   href="#contact"
                   className="px-4 py-2 hover:bg-slate-50 rounded-lg text-slate-600"
+                  onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                 >
                   Contact
                 </a>
@@ -234,34 +182,9 @@ const Index = () => {
         </div>
       </nav>
 
-      {/* Signup Modals */}
-      <Modal
-        isOpen={showTeacherSignup}
-        onClose={() => setShowTeacherSignup(false)}
-        title="Teacher Sign Up"
-      >
-        <SignupForm
-          role="teacher"
-          onClose={() => {
-            setShowTeacherSignup(false);
-            setUserRole("teacher");
-          }}
-        />
-      </Modal>
+     
 
-      <Modal
-        isOpen={showStudentSignup}
-        onClose={() => setShowStudentSignup(false)}
-        title="Student Sign Up"
-      >
-        <SignupForm
-          role="student"
-          onClose={() => {
-            setShowStudentSignup(false);
-            setUserRole("student");
-          }}
-        />
-      </Modal>
+    
 
       <main className="pt-32 pb-20 px-4 md:px-6 overflow-hidden">
         {/* Background Blobs - Matches the soft gradients in images */}
@@ -433,10 +356,88 @@ const Index = () => {
               </div>
             </div>
           </div>
+          
         </div>
       </main>
 
-      <footer className="bg-white py-8 border-t border-slate-100">
+      {/* About Section */}
+<section id="about" className="mt-20 mb-30 relative overflow-hidden">
+  <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
+          <div className="absolute top-20 left-10 w-96 h-96 bg-teal-100/40 rounded-full blur-3xl mix-blend-multiply animate-pulse"></div>
+          <div className="absolute bottom-20 right-10 w-96 h-96 bg-orange-100/40 rounded-full blur-3xl mix-blend-multiply"></div>
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-slate-100/50 rounded-full blur-3xl"></div>
+        </div>
+  <div className="text-center mb-20">
+    <h2 className="text-4xl md:text-5xl font-bold text-slate-700">
+      About <span className="text-orange-500">QuizMaster AI</span>
+    </h2>
+    <p className="text-slate-500 mt-4 max-w-2xl mx-auto">
+      Revolutionizing education through intelligent assessment technology
+    </p>
+  </div>
+
+  <div className="grid md:grid-cols-2 gap-10 max-w-6xl mx-auto">
+    {/* Mission Card */}
+    <div className="bg-white p-10 rounded-3xl shadow-md border border-slate-100">
+      <div className="w-16 h-16 bg-teal-50 rounded-2xl flex items-center justify-center mb-6">
+        <Brain className="w-8 h-8 text-teal-500" />
+      </div>
+
+      <h3 className="text-2xl font-bold text-slate-800 mb-4">Our Mission</h3>
+
+      <p className="text-slate-600 leading-relaxed mb-4">
+        QuizMaster AI is designed to empower educators and students with
+        cutting-edge assessment tools. We believe in making education more
+        accessible, efficient, and secure through the power of artificial
+        intelligence.
+      </p>
+
+      <p className="text-slate-600 leading-relaxed">
+        Our platform combines intuitive design with powerful features to create
+        a seamless experience for both teachers and students, ensuring fair and
+        accurate evaluations.
+      </p>
+    </div>
+
+    {/* Why Choose Us Card */}
+    <div className="bg-white p-10 rounded-3xl shadow-md border border-slate-100">
+      <div className="w-16 h-16 bg-orange-50 rounded-2xl flex items-center justify-center mb-6">
+        <GraduationCap className="w-8 h-8 text-orange-500" />
+      </div>
+
+      <h3 className="text-2xl font-bold text-slate-800 mb-6">Why Choose Us</h3>
+
+      <ul className="space-y-3 text-slate-600 leading-relaxed">
+        <li className="flex items-start gap-3">
+          <span className="text-orange-500 text-lg">•</span>
+          Advanced AI technology for instant quiz generation
+        </li>
+        <li className="flex items-start gap-3">
+          <span className="text-orange-500 text-lg">•</span>
+          Comprehensive anti-cheat measures for exam integrity
+        </li>
+        <li className="flex items-start gap-3">
+          <span className="text-orange-500 text-lg">•</span>
+          Real-time analytics and detailed performance insights
+        </li>
+        <li className="flex items-start gap-3">
+          <span className="text-orange-500 text-lg">•</span>
+          User-friendly interface for seamless experience
+        </li>
+        <li className="flex items-start gap-3">
+          <span className="text-orange-500 text-lg">•</span>
+          Flexible scheduling and classroom management
+        </li>
+      </ul>
+    </div>
+    
+  </div>
+{/* Contact component */}
+<Contact/>
+</section>
+
+      <footer className="bg-white py-8 border-t border-slate-100" >
+        
         <div className="container mx-auto px-6 text-center text-slate-400 text-sm">
           © 2024 QuizMaster AI. Transform your assessment experience.
         </div>
