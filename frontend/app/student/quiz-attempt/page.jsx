@@ -4,21 +4,18 @@ import {
   ArrowLeft, 
   Clock, 
   AlertTriangle, 
-  ChevronLeft, 
-  ChevronRight, 
   CheckCircle2 
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 // --- UI COMPONENTS (Teal/Cyan Theme) ---
-
 const Button = ({ className = "", variant = "primary", size = "default", children, ...props }) => {
   const base = "inline-flex items-center justify-center rounded-lg font-medium transition-all focus-visible:outline-none disabled:opacity-50 disabled:pointer-events-none";
   
   const variants = {
-    primary: "bg-cyan-500 text-white hover:bg-cyan-600 shadow-sm shadow-cyan-500/20", // Next Question
-    success: "bg-emerald-500 text-white hover:bg-emerald-600 shadow-sm shadow-emerald-500/20", // Submit
-    outline: "border border-slate-200 bg-white hover:bg-slate-50 text-slate-700", // Previous
+    primary: "bg-cyan-500 text-white hover:bg-cyan-600 shadow-sm shadow-cyan-500/20",
+    success: "bg-emerald-500 text-white hover:bg-emerald-600 shadow-sm shadow-emerald-500/20",
+    outline: "border border-slate-200 bg-white hover:bg-slate-50 text-slate-700",
     ghost: "hover:bg-slate-100 text-slate-600",
   };
 
@@ -47,25 +44,55 @@ const Card = ({ className = "", children, ...props }) => (
 
 // --- MAIN COMPONENT ---
 
-const QuizAttempt = ({ quizId = "Q002", onBack }) => {
-  const [timeLeft, setTimeLeft] = useState(1800); // 30 minutes
+const QuizAttempt = ({ quizId = "Q002" }) => {
+  const [timeLeft, setTimeLeft] = useState(1800);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState({});
   const [submitted, setSubmitted] = useState(false);
 
-  const router=useRouter()
-        const SwitchtoDashboard=()=>{
-          router.push("./")
-        }
-  
+  const router = useRouter();
 
-  // Mock Toast
-  const toast = ({ title, description, variant }) => {
-    if (variant === 'destructive') alert(`⚠️ ${title}\n${description}`);
-    else alert(`✅ ${title}\n${description}`);
+  const SwitchtoDashboard = () => {
+    router.push("./")
   };
 
-  // Timer Logic
+  // Mock Toast
+  const toast = ({ title, description }) => {
+    alert(`✅ ${title}\n${description}`);
+  };
+
+  // --- ANTI CHEAT: BLOCK COPY, SELECT, RIGHT CLICK, SHORTCUTS ---
+  useEffect(() => {
+    const prevent = (e) => e.preventDefault();
+
+    document.addEventListener("copy", prevent);
+    document.addEventListener("cut", prevent);
+    document.addEventListener("paste", prevent);
+    document.addEventListener("contextmenu", prevent);
+    document.addEventListener("selectstart", prevent);
+
+    const blockKeys = (e) => {
+      if (e.ctrlKey || e.metaKey) {
+        const blocked = ["c", "v", "x", "u", "p", "s", "a"];
+        if (blocked.includes(e.key.toLowerCase())) {
+          e.preventDefault();
+        }
+      }
+    };
+
+    document.addEventListener("keydown", blockKeys);
+
+    return () => {
+      document.removeEventListener("copy", prevent);
+      document.removeEventListener("cut", prevent);
+      document.removeEventListener("paste", prevent);
+      document.removeEventListener("contextmenu", prevent);
+      document.removeEventListener("selectstart", prevent);
+      document.removeEventListener("keydown", blockKeys);
+    };
+  }, []);
+
+  // --- TIMER ---
   useEffect(() => {
     if (timeLeft > 0 && !submitted) {
       const timer = setInterval(() => setTimeLeft((prev) => prev - 1), 1000);
@@ -75,30 +102,41 @@ const QuizAttempt = ({ quizId = "Q002", onBack }) => {
     }
   }, [timeLeft, submitted]);
 
-  // Anti-cheat (Simplified for demo)
+  // --- ANTI CHEAT: AUTO SUBMIT WHEN TAB CHANGED ---
   useEffect(() => {
     const handleVisibilityChange = () => {
       if (document.hidden && !submitted) {
-        console.log("Tab change detected"); 
-        // In real app: trigger warning or auto-submit
+        handleSubmit();
       }
     };
+
     document.addEventListener("visibilitychange", handleVisibilityChange);
     return () => document.removeEventListener("visibilitychange", handleVisibilityChange);
   }, [submitted]);
 
+  // --- ANTI CHEAT: AUTO SUBMIT WHEN WINDOW LOSES FOCUS ---
+  useEffect(() => {
+    const handleBlur = () => {
+      if (!submitted) handleSubmit();
+    };
+
+    window.addEventListener("blur", handleBlur);
+    return () => window.removeEventListener("blur", handleBlur);
+  }, [submitted]);
+
+  // Questions
   const questions = [
     {
       id: 1,
       question: "What is the derivative of x²?",
       options: ["2x²", "2x", "x²/2", "x"],
-      correctId: 1 // Index of "2x"
+      correctId: 1
     },
     {
       id: 2,
       question: "Solve for x: 2x + 5 = 15",
       options: ["10", "20", "5", "7.5"],
-      correctId: 2 // Index of "5"
+      correctId: 2
     },
   ];
 
@@ -109,7 +147,9 @@ const QuizAttempt = ({ quizId = "Q002", onBack }) => {
   };
 
   const handleSubmit = () => {
+    if (submitted) return;
     setSubmitted(true);
+
     toast({
       title: "Quiz Submitted!",
       description: "Your answers have been recorded.",
@@ -122,6 +162,7 @@ const QuizAttempt = ({ quizId = "Q002", onBack }) => {
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
+  // SUBMITTED VIEW
   if (submitted) {
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
@@ -133,7 +174,11 @@ const QuizAttempt = ({ quizId = "Q002", onBack }) => {
             <h2 className="text-2xl font-bold text-slate-900">Quiz Submitted!</h2>
             <p className="text-slate-500 mt-2">Your answers have been successfully recorded.</p>
           </div>
-          <Button onClick={SwitchtoDashboard} variant="primary" className="w-full bg-cyan-500 hover:bg-cyan-600">
+          <Button 
+            onClick={SwitchtoDashboard} 
+            variant="primary" 
+            className="w-full bg-cyan-500 hover:bg-cyan-600"
+          >
             Return to Dashboard
           </Button>
         </Card>
@@ -141,9 +186,10 @@ const QuizAttempt = ({ quizId = "Q002", onBack }) => {
     );
   }
 
+  // ACTIVE QUIZ VIEW
   return (
-    <div className="min-h-screen bg-slate-50 font-sans text-slate-900 pb-20">
-      
+    <div className="min-h-screen bg-slate-50 font-sans text-slate-900 pb-20 select-none">
+
       {/* Header */}
       <div className="bg-white border-b border-slate-200 sticky top-0 z-20 shadow-sm">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
@@ -153,8 +199,8 @@ const QuizAttempt = ({ quizId = "Q002", onBack }) => {
               Question {currentQuestion + 1} of {questions.length}
             </span>
           </div>
-          
-          {/* Timer Badge */}
+
+          {/* Timer */}
           <div className="bg-cyan-50 text-cyan-700 px-4 py-2 rounded-lg font-mono font-bold text-sm flex items-center gap-2 border border-cyan-100">
             <Clock className="h-4 w-4" />
             {formatTime(timeLeft)}
@@ -162,15 +208,15 @@ const QuizAttempt = ({ quizId = "Q002", onBack }) => {
         </div>
       </div>
 
-      {/* Anti-Cheat Warning Banner */}
+      {/* Anti-Cheat Warning */}
       <div className="bg-orange-50 border-b border-orange-100 text-orange-700 px-4 py-3 text-sm text-center flex justify-center items-center gap-2">
         <AlertTriangle className="h-4 w-4" />
-        <span>Anti-cheat enabled: Copying is disabled. Changing tabs will auto-submit the quiz.</span>
+        <span>Anti-cheat enabled: No copying. Changing tabs or windows will auto-submit.</span>
       </div>
 
       <div className="container mx-auto px-4 py-8 max-w-3xl space-y-8">
-        
-        {/* Question Card */}
+
+        {/* Question */}
         <Card className="p-8 md:p-10">
           <h2 className="text-2xl font-semibold text-slate-900 mb-8">
             {currentQ.question}
@@ -179,8 +225,9 @@ const QuizAttempt = ({ quizId = "Q002", onBack }) => {
           <div className="space-y-4">
             {currentQ.options.map((option, idx) => {
               const isSelected = answers[currentQuestion] === idx;
+
               return (
-                <label 
+                <label
                   key={idx}
                   className={`flex items-center gap-4 p-4 rounded-xl border-2 transition-all cursor-pointer group ${
                     isSelected 
@@ -193,7 +240,7 @@ const QuizAttempt = ({ quizId = "Q002", onBack }) => {
                   }`}>
                     {isSelected && <div className="w-2.5 h-2.5 rounded-full bg-cyan-500" />}
                   </div>
-                  
+
                   <input 
                     type="radio" 
                     name={`question-${currentQuestion}`} 
@@ -201,7 +248,7 @@ const QuizAttempt = ({ quizId = "Q002", onBack }) => {
                     checked={isSelected}
                     onChange={() => handleOptionSelect(idx)}
                   />
-                  
+
                   <div className="flex items-center gap-2 text-slate-700 font-medium">
                     <span className="text-slate-400 uppercase text-sm font-bold w-6">
                       {String.fromCharCode(65 + idx)}.
@@ -214,7 +261,7 @@ const QuizAttempt = ({ quizId = "Q002", onBack }) => {
           </div>
         </Card>
 
-        {/* Navigation Buttons */}
+        {/* Navigation */}
         <div className="flex justify-between items-center pt-2">
           <Button 
             variant="outline" 
@@ -242,52 +289,6 @@ const QuizAttempt = ({ quizId = "Q002", onBack }) => {
             </Button>
           )}
         </div>
-
-        {/* Question Navigator */}
-        <Card className="p-6">
-          <h3 className="text-sm font-bold text-slate-900 mb-4">Question Navigator</h3>
-          
-          <div className="flex flex-wrap gap-3 mb-6">
-            {questions.map((_, idx) => {
-              let statusClass = "bg-slate-100 text-slate-500 border-transparent"; // Not Answered
-              
-              if (currentQuestion === idx) {
-                statusClass = "bg-cyan-500 text-white shadow-md shadow-cyan-500/20"; // Current
-              } else if (answers[idx] !== undefined) {
-                statusClass = "bg-white border-emerald-400 text-emerald-600 border-2"; // Answered (using border style as per common design or solid if preferred)
-                 // Or solid green if strictly following 'Answered' filled square logic:
-                 // statusClass = "bg-emerald-100 text-emerald-700 border-transparent";
-              }
-
-              return (
-                <button
-                  key={idx}
-                  onClick={() => setCurrentQuestion(idx)}
-                  className={`w-10 h-10 rounded-lg font-bold text-sm transition-all flex items-center justify-center border ${statusClass}`}
-                >
-                  {idx + 1}
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Legend */}
-          <div className="flex flex-wrap gap-6 text-xs font-medium text-slate-500">
-            <div className="flex items-center gap-2">
-              <div className="w-4 h-4 rounded border-2 border-emerald-400 bg-white"></div>
-              <span>Answered</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-4 h-4 rounded bg-slate-100"></div>
-              <span>Not Answered</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-4 h-4 rounded bg-cyan-500"></div>
-              <span>Current</span>
-            </div>
-          </div>
-        </Card>
-
       </div>
     </div>
   );

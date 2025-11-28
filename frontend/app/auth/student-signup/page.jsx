@@ -131,7 +131,7 @@ export default function StudentSignup({ onClose, onSwitchToSignIn }) {
                 <Label htmlFor="name" icon={User}>Full Name</Label>
                 <Input
                   id="name"
-                  placeholder="Ahmed Ali"
+                  placeholder="your's Name"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   required
@@ -141,7 +141,7 @@ export default function StudentSignup({ onClose, onSwitchToSignIn }) {
                 <Label htmlFor="fatherName" icon={UserCheck}>Father's Name</Label>
                 <Input
                   id="fatherName"
-                  placeholder="Mohammad Ali"
+                  placeholder="Father's Name"
                   value={formData.fatherName}
                   onChange={(e) => setFormData({ ...formData, fatherName: e.target.value })}
                   required
@@ -154,7 +154,7 @@ export default function StudentSignup({ onClose, onSwitchToSignIn }) {
               <Input
                 id="email"
                 type="email"
-                placeholder="ahmed.ali@student.edu"
+                placeholder="Institute Email"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 required
@@ -206,7 +206,7 @@ export default function StudentSignup({ onClose, onSwitchToSignIn }) {
                     <SelectValue placeholder="Select semester" />
                   </SelectTrigger>
                   <SelectContent>
-                    {[1, 2, 3, 4, 5, 6, 7, 8].map((sem) => (
+                    {[1, 2, 3, 4, 5, 6, 7, 8,9,10].map((sem) => (
                       <SelectItem key={sem} value={sem.toString()}>
                         Semester {sem}
                       </SelectItem>
